@@ -1,17 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { sampleProviders, sampleReviews } from '@/lib/seed-data'
-// import { db, solarProviders, solarReviews } from '@/db'
-// import { eq, and, desc } from 'drizzle-orm'
+import { supabaseService } from '@/lib/supabase'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id: providerId } = await params
-
-    // Get provider details from sample data
-    const provider = sampleProviders.find(p => p.id === providerId && p.isActive)
+    const provider = await supabaseService.getSolarProvider(params.id)
 
     if (!provider) {
       return NextResponse.json(
@@ -20,21 +15,19 @@ export async function GET(
       )
     }
 
-    // Get reviews for this provider from sample data
-    const reviews = sampleReviews
-      .filter(review => review.providerId === providerId && review.isPublished)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .slice(0, 10)
+    // Get reviews for this provider
+    const reviews = await supabaseService.getSolarReviews(params.id)
 
     return NextResponse.json({
       provider,
       reviews,
-      reviewCount: provider.totalReviews
+      totalReviews: reviews.length
     })
+
   } catch (error) {
-    console.error('Error fetching provider:', error)
+    console.error('Get provider error:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch provider details' },
+      { error: 'Failed to fetch provider' },
       { status: 500 }
     )
   }
@@ -42,37 +35,52 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id: providerId } = await params
     const body = await request.json()
+    
+    const provider = await supabaseService.upsertSolarProvider({
+      id: params.id,
+      ...body
+    })
 
-    // Update provider
-    const [updatedProvider] = await db
-      .update(solarProviders)
-      .set({
-        ...body,
-        updatedAt: new Date()
-      })
-      .where(eq(solarProviders.id, providerId))
-      .returning()
+    return NextResponse.json({
+      provider,
+      message: 'Provider updated successfully'
+    })
 
-    if (!updatedProvider) {
-      return NextResponse.json(
-        { error: 'Provider not found' },
-        { status: 404 }
-      )
+  } catch (error) {
+    console.error('Update provider error:', error)
+    return NextResponse.json(
+      { error: 'Failed to update provider' },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { error } = await supabaseService.client
+      .from('solarreviews_providers')
+      .delete()
+      .eq('id', params.id)
+
+    if (error) {
+      throw new Error(`Failed to delete provider: ${error.message}`)
     }
 
     return NextResponse.json({
-      message: 'Provider updated successfully',
-      provider: updatedProvider
+      message: 'Provider deleted successfully'
     })
+
   } catch (error) {
-    console.error('Error updating provider:', error)
+    console.error('Delete provider error:', error)
     return NextResponse.json(
-      { error: 'Failed to update provider' },
+      { error: 'Failed to delete provider' },
       { status: 500 }
     )
   }
