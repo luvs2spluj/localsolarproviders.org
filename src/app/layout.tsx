@@ -16,9 +16,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || 'pk_test_cG9zc2libGUtc2N1bHBpbi0yOS5jbGVyay5hY2NvdW50cy5kZXYk'
+  
   return (
     <ClerkProvider
-      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+      publishableKey={clerkKey}
       signInFallbackRedirectUrl="/"
       signUpFallbackRedirectUrl="/"
     >
