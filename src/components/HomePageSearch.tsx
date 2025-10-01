@@ -1,7 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { useUser } from '@clerk/nextjs'
+import { Bookmark, BookmarkCheck } from 'lucide-react'
 import AddressSearch from './AddressSearch'
+import { useUserContext } from './UserProvider'
 
 interface SearchLocation {
   address: string
@@ -14,6 +17,8 @@ interface SearchLocation {
 }
 
 export default function HomePageSearch() {
+  const { user } = useUser()
+  const { saveInstallersList, getSavedInstallers } = useUserContext()
   const [providers, setProviders] = useState<any[]>([])
   const [location, setLocation] = useState<SearchLocation | null>(null)
   const [showResults, setShowResults] = useState(false)
@@ -22,6 +27,19 @@ export default function HomePageSearch() {
     setLocation(searchLocation)
     setProviders(searchProviders)
     setShowResults(true)
+  }
+
+  const handleSaveList = () => {
+    if (location && providers.length > 0) {
+      saveInstallersList(location.address, providers)
+      alert(`Saved ${providers.length} providers for ${location.address}`)
+    }
+  }
+
+  const isListSaved = () => {
+    if (!location) return false
+    const saved = getSavedInstallers(location.address)
+    return saved.length > 0
   }
 
   return (
@@ -33,9 +51,33 @@ export default function HomePageSearch() {
       
       {showResults && location && (
         <div className="mt-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
-            Vetted Local Solar Providers near "{location.address}"
-          </h2>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">
+              Vetted Local Solar Providers near "{location.address}"
+            </h2>
+            {user && providers.length > 0 && (
+              <button
+                onClick={handleSaveList}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
+                  isListSaved() 
+                    ? 'bg-green-100 text-green-800 hover:bg-green-200' 
+                    : 'bg-blue-100 text-blue-800 hover:bg-blue-200'
+                }`}
+              >
+                {isListSaved() ? (
+                  <>
+                    <BookmarkCheck className="h-4 w-4" />
+                    <span>Saved</span>
+                  </>
+                ) : (
+                  <>
+                    <Bookmark className="h-4 w-4" />
+                    <span>Save List</span>
+                  </>
+                )}
+              </button>
+            )}
+          </div>
           
           {providers.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
