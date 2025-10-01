@@ -124,7 +124,7 @@ class GeocodingService {
     }
   }
 
-  // Search using Nominatim API
+  // Search using our server-side Nominatim proxy
   private async searchNominatim(
     query: string, 
     options: {
@@ -136,35 +136,19 @@ class GeocodingService {
       signal?: AbortSignal
     }
   ): Promise<GeocodingResult[]> {
-    const { limit, country, language, focusPoint, bbox, signal } = options
+    const { limit, country, signal } = options
 
-    const url = new URL('https://nominatim.openstreetmap.org/search')
+    const url = new URL('/api/geocoding/search', window.location.origin)
     url.searchParams.set('q', query)
-    url.searchParams.set('format', 'jsonv2')
-    url.searchParams.set('addressdetails', '1')
     url.searchParams.set('limit', limit.toString())
-    url.searchParams.set('countrycodes', country.toLowerCase())
-    url.searchParams.set('dedupe', '1')
-    url.searchParams.set('language', language)
-    
-    // Add viewbox for better US results
-    url.searchParams.set('viewbox', `${bbox[0]},${bbox[1]},${bbox[2]},${bbox[3]}`)
-    url.searchParams.set('bounded', '1')
-
-    // Add focus point for better relevance
-    url.searchParams.set('lat', focusPoint.lat.toString())
-    url.searchParams.set('lon', focusPoint.lng.toString())
+    url.searchParams.set('country', country)
 
     const response = await fetch(url.toString(), {
-      headers: {
-        'User-Agent': 'LocalSolarProviders/1.0 (contact@localsolarproviders.org)',
-        'Accept': 'application/json'
-      },
       signal
     })
 
     if (!response.ok) {
-      throw new Error(`Nominatim API error: ${response.status} ${response.statusText}`)
+      throw new Error(`Geocoding API error: ${response.status} ${response.statusText}`)
     }
 
     const data = await response.json()
@@ -173,73 +157,29 @@ class GeocodingService {
       return []
     }
 
-    // Transform Nominatim results to our format
-    return data.map((item: any, index: number) => ({
-      id: `nominatim_${item.place_id || index}`,
-      name: item.name || item.display_name.split(',')[0] || query,
-      label: item.display_name || item.name || query,
-      lat: parseFloat(item.lat),
-      lng: parseFloat(item.lon),
-      address: item.address ? {
-        house_number: item.address.house_number,
-        road: item.address.road,
-        city: item.address.city || item.address.town || item.address.village,
-        state: item.address.state,
-        postcode: item.address.postcode,
-        country: item.address.country
-      } : undefined,
-      importance: item.importance,
-      place_rank: item.place_rank,
-      category: item.category,
-      type: item.type
-    }))
+    return data
   }
 
   // Reverse geocoding - get address from coordinates
   async reverseGeocode(lat: number, lng: number): Promise<GeocodingResult | null> {
     try {
-      const url = new URL('https://nominatim.openstreetmap.org/reverse')
+      const url = new URL('/api/geocoding/reverse', window.location.origin)
       url.searchParams.set('lat', lat.toString())
-      url.searchParams.set('lon', lng.toString())
-      url.searchParams.set('format', 'jsonv2')
-      url.searchParams.set('addressdetails', '1')
+      url.searchParams.set('lng', lng.toString())
 
-      const response = await fetch(url.toString(), {
-        headers: {
-          'User-Agent': 'LocalSolarProviders/1.0 (contact@localsolarproviders.org)',
-          'Accept': 'application/json'
-        }
-      })
+      const response = await fetch(url.toString())
 
       if (!response.ok) {
-        throw new Error(`Nominatim reverse geocoding error: ${response.status}`)
+        throw new Error(`Reverse geocoding API error: ${response.status}`)
       }
 
       const data = await response.json()
 
-      if (!data || !data.lat || !data.lon) {
+      if (!data) {
         return null
       }
 
-      return {
-        id: `reverse_${data.place_id}`,
-        name: data.name || data.display_name.split(',')[0],
-        label: data.display_name,
-        lat: parseFloat(data.lat),
-        lng: parseFloat(data.lon),
-        address: data.address ? {
-          house_number: data.address.house_number,
-          road: data.address.road,
-          city: data.address.city || data.address.town || data.address.village,
-          state: data.address.state,
-          postcode: data.address.postcode,
-          country: data.address.country
-        } : undefined,
-        importance: data.importance,
-        place_rank: data.place_rank,
-        category: data.category,
-        type: data.type
-      }
+      return data
 
     } catch (error) {
       console.error('Reverse geocoding error:', error)

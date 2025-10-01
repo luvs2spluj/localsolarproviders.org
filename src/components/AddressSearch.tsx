@@ -40,23 +40,23 @@ export default function AddressSearch({ onSearch, placeholder = "Enter your addr
     setIsSearching(true)
     setError(null)
 
-    try {
-      // Search for providers using the new API endpoint
-      const response = await fetch(`/api/search/providers?address=${encodeURIComponent(searchAddress)}&radius=50`)
-      const data = await response.json()
+            try {
+              // Search for providers using the simple API endpoint (temporary)
+              const response = await fetch(`/api/search/providers-simple?address=${encodeURIComponent(searchAddress)}&radius=50`)
+              const data = await response.json()
 
-      if (response.ok) {
-        onSearch(data.location, data.providers)
-        setSearchValue(searchAddress)
-      } else {
-        setError(data.error || 'Failed to search for providers')
-      }
-    } catch (error) {
-      console.error('Search error:', error)
-      setError('Failed to search for providers')
-    } finally {
-      setIsSearching(false)
-    }
+              if (response.ok) {
+                onSearch(data.location, data.providers)
+                setSearchValue(searchAddress)
+              } else {
+                setError(data.error || 'Failed to search for providers')
+              }
+            } catch (error) {
+              console.error('Search error:', error)
+              setError('Failed to search for providers')
+            } finally {
+              setIsSearching(false)
+            }
   }
 
   const handleAddressPick = (addressData: {
@@ -85,22 +85,22 @@ export default function AddressSearch({ onSearch, placeholder = "Enter your addr
     setIsSearching(true)
     setError(null)
 
-    try {
-      // Search for providers using coordinates
-      const response = await fetch(`/api/search/providers?lat=${location.coordinates.lat}&lng=${location.coordinates.lon}&radius=50`)
-      const data = await response.json()
+            try {
+              // Search for providers using coordinates (simple endpoint)
+              const response = await fetch(`/api/search/providers-simple?lat=${location.coordinates.lat}&lng=${location.coordinates.lon}&radius=50`)
+              const data = await response.json()
 
-      if (response.ok) {
-        onSearch(location, data.providers)
-      } else {
-        setError(data.error || 'Failed to search for providers')
-      }
-    } catch (error) {
-      console.error('Search error:', error)
-      setError('Failed to search for providers')
-    } finally {
-      setIsSearching(false)
-    }
+              if (response.ok) {
+                onSearch(location, data.providers)
+              } else {
+                setError(data.error || 'Failed to search for providers')
+              }
+            } catch (error) {
+              console.error('Search error:', error)
+              setError('Failed to search for providers')
+            } finally {
+              setIsSearching(false)
+            }
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
