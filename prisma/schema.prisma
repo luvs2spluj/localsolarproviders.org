@@ -1,0 +1,144 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Installer {
+  id            String   @id @default(cuid())
+  osmId         String?  @unique // OpenStreetMap ID if sourced from OSM
+  name          String
+  lat           Float
+  lon           Float
+  address       String?
+  city          String?
+  state         String?
+  postal        String?
+  phone         String?
+  website       String?
+  
+  // Metadata
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  lastScannedAt DateTime?
+  
+  // Relations
+  specialties   InstallerSpecialty[]
+  externalLinks ExternalLink[]
+  scanLogs      ScanLog[]
+  
+  @@map("installers")
+}
+
+model Specialty {
+  id    String @id @default(cuid())
+  slug  String @unique
+  label String
+  
+  // Relations
+  installers InstallerSpecialty[]
+  
+  @@map("specialties")
+}
+
+model InstallerSpecialty {
+  installerId String
+  specialtyId String
+  
+  installer Installer @relation(fields: [installerId], references: [id], onDelete: Cascade)
+  specialty Specialty @relation(fields: [specialtyId], references: [id], onDelete: Cascade)
+  
+  @@unique([installerId, specialtyId])
+  @@map("installer_specialties")
+}
+
+model ExternalLink {
+  id          String      @id @default(cuid())
+  installerId String
+  kind        LinkKind
+  url         String
+  createdAt   DateTime    @default(now())
+  
+  installer Installer @relation(fields: [installerId], references: [id], onDelete: Cascade)
+  
+  @@map("external_links")
+}
+
+model ScanLog {
+  id          String    @id @default(cuid())
+  installerId String?
+  source      ScanSource
+  status      ScanStatus
+  message     String?
+  createdAt   DateTime  @default(now())
+  
+  installer Installer? @relation(fields: [installerId], references: [id], onDelete: Cascade)
+  
+  @@map("scan_logs")
+}
+
+enum LinkKind {
+  GOOGLE
+  YELP
+  BBB
+  FACEBOOK
+  NABCEP
+  OTHER
+}
+
+enum ScanSource {
+  OVERPASS
+  SITE
+  NABCEP
+  MANUAL
+}
+
+enum ScanStatus {
+  OK
+  ERROR
+  SKIPPED
+}
+
+// Search system models
+model SearchResult {
+  id         String      @id @default(cuid())
+  engine     SearchEngine
+  query      String      // e.g., "solar installers in San Jose, CA"
+  location   String      // e.g., "San Jose, CA"
+  title      String
+  url        String
+  snippet    String
+  sourceRank Int
+  fetchedAt  DateTime    @default(now())
+  hash       String      @unique // sha256 of engine+url+title
+  
+  @@map("search_results")
+}
+
+model SearchRun {
+  id        String       @id @default(cuid())
+  engine    SearchEngine
+  query     String
+  location  String
+  createdAt DateTime     @default(now())
+  status    SearchStatus
+  message   String?
+  
+  @@map("search_runs")
+}
+
+enum SearchEngine {
+  BRAVE
+  GOOGLE
+}
+
+enum SearchStatus {
+  OK
+  ERROR
+}
