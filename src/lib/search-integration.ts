@@ -150,7 +150,7 @@ export class SearchIntegrationService {
 
       // Build Supabase query
       let query = this.supabaseService.client
-        .from('solarreviews_providers')
+        .from('solar_providers')
         .select('*')
 
       // Apply filters

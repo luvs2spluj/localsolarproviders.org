@@ -41,8 +41,8 @@ export default function AddressSearch({ onSearch, placeholder = "Enter your addr
     setError(null)
 
             try {
-              // Search for providers using the simple API endpoint (temporary)
-              const response = await fetch(`/api/search/providers-simple?address=${encodeURIComponent(searchAddress)}&radius=50`)
+              // Search for providers using the real Supabase API endpoint
+              const response = await fetch(`/api/search/providers?address=${encodeURIComponent(searchAddress)}&radius=50`)
               const data = await response.json()
 
               if (response.ok) {
@@ -86,8 +86,8 @@ export default function AddressSearch({ onSearch, placeholder = "Enter your addr
     setError(null)
 
             try {
-              // Search for providers using coordinates (simple endpoint)
-              const response = await fetch(`/api/search/providers-simple?lat=${location.coordinates.lat}&lng=${location.coordinates.lon}&radius=50`)
+              // Search for providers using coordinates (real Supabase endpoint)
+              const response = await fetch(`/api/search/providers?lat=${location.coordinates.lat}&lng=${location.coordinates.lon}&radius=50`)
               const data = await response.json()
 
               if (response.ok) {
