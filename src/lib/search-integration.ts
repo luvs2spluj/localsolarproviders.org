@@ -142,6 +142,12 @@ export class SearchIntegrationService {
     }
   ) {
     try {
+      // Check if Supabase is configured
+      if (!this.supabaseService.isConfigured()) {
+        console.warn('Supabase not configured, returning empty results')
+        return []
+      }
+
       // Build Supabase query
       let query = this.supabaseService.client
         .from('solarreviews_providers')
@@ -215,7 +221,8 @@ export class SearchIntegrationService {
 
     } catch (error) {
       console.error('Error searching providers by location:', error)
-      throw error
+      // Return empty array instead of throwing to prevent app crashes
+      return []
     }
   }
 
