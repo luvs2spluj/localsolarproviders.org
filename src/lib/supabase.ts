@@ -5,8 +5,8 @@ import { createClient } from '@supabase/supabase-js'
 
 // Supabase configuration
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://qktumtzgbwsprueqqhsr.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrdHVtdHpnYndzcHJ1ZXFxaHNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU3MzQ4NzMsImV4cCI6MjA1MTMxMDg3M30.tQw1RTmzurTIYYbg7CnT9Q_3ZiNHEqm'
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrdHVtdHpnYndzcHJ1ZXFxaHNyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNTczNDg3MywiZXhwIjoyMDUxMzEwODczfQ.d9HHXBKhdcuaKJ1_6bzhbg_eCHDbm67'
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'tQw1RTmzurTIYYbg7CnT9Q_3ZiNHEqm'
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'oi1QaJ7mi8iAvgT8hcuWug_Aast8rqO'
 
 // Validate required environment variables
 if (!supabaseUrl) {
