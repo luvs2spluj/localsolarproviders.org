@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
         
         // Test a simple query
         const { data, error } = await supabase
-          .from('solarreviews_providers')
+          .from('solar_providers')
           .select('count')
           .limit(1)
 

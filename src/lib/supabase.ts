@@ -171,7 +171,7 @@ export class SupabaseService {
     }
 
     let query = this.client
-      .from('solarreviews_providers')
+      .from('solar_providers')
       .select('*')
 
     if (filters?.state) {
@@ -214,7 +214,7 @@ export class SupabaseService {
     }
 
     const { data, error } = await this.client
-      .from('solarreviews_providers')
+      .from('solar_providers')
       .select('*')
       .eq('id', id)
       .single()
@@ -242,7 +242,7 @@ export class SupabaseService {
     // Use PostGIS for location-based search if available
     // For now, we'll do a simple text-based search
     const { data, error } = await this.client
-      .from('solarreviews_providers')
+      .from('solar_providers')
       .select('*')
       .eq('is_active', true)
       .order('overall_rating', { ascending: false })
@@ -261,7 +261,7 @@ export class SupabaseService {
     }
 
     const { data, error } = await this.client
-      .from('solarreviews_providers')
+      .from('solar_providers')
       .upsert(provider, { onConflict: 'id' })
       .select()
       .single()
@@ -280,7 +280,7 @@ export class SupabaseService {
     }
 
     const { data, error } = await this.client
-      .from('solarreviews_reviews')
+      .from('solar_reviews')
       .select('*')
       .eq('provider_id', providerId)
       .order('review_date', { ascending: false })
@@ -299,7 +299,7 @@ export class SupabaseService {
     }
 
     const { data, error } = await this.client
-      .from('solarreviews_reviews')
+      .from('solar_reviews')
       .insert(review)
       .select()
       .single()
@@ -318,7 +318,7 @@ export class SupabaseService {
     }
 
     const { data, error } = await this.client
-      .from('solarreviews_leads')
+      .from('solar_leads')
       .select('*')
       .eq('provider_id', providerId)
       .order('created_at', { ascending: false })
@@ -337,7 +337,7 @@ export class SupabaseService {
     }
 
     const { data, error } = await this.client
-      .from('solarreviews_leads')
+      .from('solar_leads')
       .insert(lead)
       .select()
       .single()
@@ -363,9 +363,9 @@ export class SupabaseService {
 
     try {
       const [providersResult, reviewsResult, leadsResult] = await Promise.all([
-        this.client.from('solarreviews_providers').select('id, is_verified, is_active', { count: 'exact' }),
-        this.client.from('solarreviews_reviews').select('id', { count: 'exact' }),
-        this.client.from('solarreviews_leads').select('id', { count: 'exact' })
+        this.client.from('solar_providers').select('id, is_verified, is_active', { count: 'exact' }),
+        this.client.from('solar_reviews').select('id', { count: 'exact' }),
+        this.client.from('solar_leads').select('id', { count: 'exact' })
       ])
 
       const totalProviders = providersResult.count || 0
@@ -395,7 +395,7 @@ export class SupabaseService {
     return this.client
       .channel('solar-providers')
       .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'solarreviews_providers' }, 
+        { event: '*', schema: 'public', table: 'solar_providers' }, 
         callback
       )
       .subscribe()
@@ -410,7 +410,7 @@ export class SupabaseService {
     return this.client
       .channel(`solar-reviews-${providerId}`)
       .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'solarreviews_reviews', filter: `provider_id=eq.${providerId}` }, 
+        { event: '*', schema: 'public', table: 'solar_reviews', filter: `provider_id=eq.${providerId}` }, 
         callback
       )
       .subscribe()

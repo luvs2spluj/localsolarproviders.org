@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     // Test basic Supabase connection
     const { data, error } = await supabaseService.client
-      .from('solarreviews_providers')
+      .from('solar_providers')
       .select('count')
       .limit(1)
 
