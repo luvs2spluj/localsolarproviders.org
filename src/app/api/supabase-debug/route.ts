@@ -6,8 +6,8 @@ export async function GET(request: NextRequest) {
     // Test the exact Supabase URL and keys from the linter output
     const supabaseUrl = 'https://qktumtzgbwsprueqqhsr.supabase.co'
     
-    // Test with a simple anon key first
-    const testAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrdHVtdHpnYndzcHJ1ZXFxaHNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU3MzQ4NzMsImV4cCI6MjA1MTMxMDg3M30.tQw1RTmzurTIYYbg7CnT9Q_3ZiNHEqm'
+    // Test with the new anon key
+    const testAnonKey = 'tQw1RTmzurTIYYbg7CnT9Q_3ZiNHEqm'
     
     const supabase = createClient(supabaseUrl, testAnonKey)
     
