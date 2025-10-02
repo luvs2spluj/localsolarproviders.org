@@ -2,8 +2,8 @@
 
 # Add Supabase environment variables to Vercel (EnergyDaddy credentials)
 echo "https://qktumtzgbwsprueqqhsr.supabase.co" | npx vercel env add NEXT_PUBLIC_SUPABASE_URL production
-echo "tQw1RTmzurTIYYbg7CnT9Q_3ZiNHEqm" | npx vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY production
-echo "d9HHXBKhdcuaKJ1_6bzhbg_eCHDbm67" | npx vercel env add SUPABASE_SERVICE_ROLE_KEY production
+echo "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrdHVtdHpnYndzcHJ1ZXFxaHNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU3MzQ4NzMsImV4cCI6MjA1MTMxMDg3M30.tQw1RTmzurTIYYbg7CnT9Q_3ZiNHEqm" | npx vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY production
+echo "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrdHVtdHpnYndzcHJ1ZXFxaHNyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNTczNDg3MywiZXhwIjoyMDUxMzEwODczfQ.d9HHXBKhdcuaKJ1_6bzhbg_eCHDbm67" | npx vercel env add SUPABASE_SERVICE_ROLE_KEY production
 
 # Add Clerk environment variables
 echo "pk_test_cG9zc2libGUtc2N1bHBpbi0yOS5jbGVyay5hY2NvdW50cy5kZXYk" | npx vercel env add NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY production
