@@ -5,8 +5,8 @@ import { createClient } from '@supabase/supabase-js'
 
 // Supabase configuration
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://qktumtzgbwsprueqqhsr.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'tQw1RTmzurTIYYbg7CnT9Q_3ZiNHEqm'
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'oi1QaJ7mi8iAvgT8hcuWug_Aast8rqO'
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrdHVtdHpnYndzcHJ1ZXFxaHNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU3MzQ4NzMsImV4cCI6MjA1MTMxMDg3M30.e8cf2722-bfc3-4f1b-8760-8d76a0e61e19'
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrdHVtdHpnYndzcHJ1ZXFxaHNyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNTczNDg3MywiZXhwIjoyMDUxMzEwODczfQ.4b2bc389-b784-4c4e-a7ad-4cb54d579fad'
 
 // Validate required environment variables
 if (!supabaseUrl) {
